@@ -34,6 +34,13 @@ interface TokenInfo {
   symbol: string;
 }
 
+interface TokenData {
+  address: `0x${string}`;
+  name: string;
+  symbol: string;
+  logo: string;
+}
+
 interface PairData {
   id: string;
   asset: {
@@ -154,10 +161,18 @@ async function transformPairData(
 
   return {
     id: pair.id,
-    assetName: `${pair.asset.info.name} (${pair.asset.info.symbol})`,
-    assetLogo: getTokenLogoFromList(pair.asset.address, tokenList),
-    collateralName: `${pair.collateral.info.name} (${pair.collateral.info.symbol})`,
-    collateralLogo: getTokenLogoFromList(pair.collateral.address, tokenList),
+    asset: {
+      address: asset.result,
+      name: assetName.result,
+      symbol: assetSymbol.result,
+      logo: getTokenLogoFromList(asset.result, tokenList)
+    },
+    collateral: {
+      address: collateral.result,
+      name: collateralName.result,
+      symbol: collateralSymbol.result,
+      logo: getTokenLogoFromList(collateral.result, tokenList)
+    },
     borrowingCost,
     lendingYield,
     accounting: serializeAccounting(pair.accounting),

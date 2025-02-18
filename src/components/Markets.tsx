@@ -2,6 +2,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
+import { Market } from '@/lib/store/marketsSlice';
 import { toggleViewMode } from '@/lib/store/marketsSlice';
 import Image from 'next/image';
 import { useMarkets } from '@/lib/hooks/useMarkets';
@@ -11,6 +12,10 @@ import { useRouter } from 'next/navigation';
 // Format rate as percentage with 2 decimal places
 function formatRate(rate: number): string {
   return rate.toFixed(2) + '%';
+}
+
+function formatTokenName(token: Market['asset']): string {
+  return `${token.name} (${token.symbol})`;
 }
 
 export default function Markets() {
@@ -28,8 +33,8 @@ export default function Markets() {
     
     const query = searchQuery.toLowerCase();
     return markets.filter(market => {
-      const assetName = market.assetName.toLowerCase();
-      const collateralName = market.collateralName.toLowerCase();
+      const assetName = market.asset.name.toLowerCase();
+      const collateralName = market.collateral.name.toLowerCase();
       return assetName.includes(query) || collateralName.includes(query);
     });
   }, [markets, searchQuery]);
@@ -103,23 +108,23 @@ export default function Markets() {
               <div className="grid grid-cols-3 items-center">
                 <div className="flex items-center space-x-2">
                   <Image
-                    src={market.collateralLogo}
-                    alt={market.collateralName}
+                    src={market.collateral.logo}
+                    alt={market.collateral.name}
                     width={32}
                     height={32}
                     className="rounded-full"
                   />
-                  <span className="font-medium">{market.collateralName}</span>
+                  <span className="font-medium">{formatTokenName(market.collateral)}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Image
-                    src={market.assetLogo}
-                    alt={market.assetName}
+                    src={market.asset.logo}
+                    alt={market.asset.name}
                     width={32}
                     height={32}
                     className="rounded-full"
                   />
-                  <span className="font-medium">{market.assetName}</span>
+                  <span className="font-medium">{formatTokenName(market.asset)}</span>
                 </div>
                 <div className="text-right">
                   <div className="text-lg font-bold">

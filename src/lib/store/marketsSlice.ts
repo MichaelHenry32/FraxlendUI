@@ -1,12 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SerializedPairAccounting } from '../types';
 
+interface TokenData {
+  address: `0x${string}`;
+  name: string;
+  symbol: string;
+  logo: string;
+}
+
 export interface Market {
   id: string;
-  assetName: string;
-  assetLogo: string;
-  collateralName: string;
-  collateralLogo: string;
+  asset: TokenData;
+  collateral: TokenData;
   borrowingCost: number;
   lendingYield: number;
   accounting: SerializedPairAccounting;

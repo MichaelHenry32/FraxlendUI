@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
+import { Market } from '@/lib/store/marketsSlice';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatAmount, formatRate, calculateUtilization } from '@/lib/types';
@@ -48,7 +49,7 @@ function AssetInput({
         <label className="block text-sm font-medium text-gray-700">{label}</label>
         {maxAmount && (
           <button
-            onClick={() => onChange(maxAmount)}
+            onClick={() => onChange(formatAmount(maxAmount))}
             className="text-sm text-blue-500 hover:text-blue-600"
           >
             Max: {formatAmount(maxAmount)}
@@ -69,6 +70,10 @@ function AssetInput({
   );
 }
 
+function formatTokenName(token: Market['asset']): string {
+  return `${token.name} (${token.symbol})`;
+}
+
 export default function PairDetails() {
   const params = useParams();
   const address = typeof params.address === 'string' ? params.address : Array.isArray(params.address) ? params.address[0] : '';
@@ -86,9 +91,9 @@ export default function PairDetails() {
   // Load markets data
   useMarkets();
 
-  // Fetch user's asset balance
+  // Fetch user's asset balance using the asset token address
   const { data: assetBalance } = useContractRead({
-    address: market?.id as `0x${string}`,
+    address: market?.asset.address,
     abi: ERC20_ABI,
     functionName: 'balanceOf',
     args: walletAddress ? [walletAddress] : undefined,
@@ -116,8 +121,8 @@ export default function PairDetails() {
   }
 
   // Extract asset and collateral symbols from the names
-  const assetSymbol = market.assetName.match(/\((.*?)\)/)?.[1] || market.assetName;
-  const collateralSymbol = market.collateralName.match(/\((.*?)\)/)?.[1] || market.collateralName;
+  const assetSymbol = market.asset.symbol;
+  const collateralSymbol = market.collateral.symbol;
 
   return (
     <main className="container mx-auto p-4">
@@ -142,24 +147,24 @@ export default function PairDetails() {
                 <div className="flex items-center space-x-4 mt-1">
                   <div className="flex items-center space-x-2">
                     <Image
-                      src={market.assetLogo}
-                      alt={market.assetName}
+                      src={market.asset.logo}
+                      alt={market.asset.name}
                       width={24}
                       height={24}
                       className="rounded-full"
                     />
-                    <span>{market.assetName}</span>
+                    <span>{formatTokenName(market.asset)}</span>
                   </div>
                   <span>/</span>
                   <div className="flex items-center space-x-2">
                     <Image
-                      src={market.collateralLogo}
-                      alt={market.collateralName}
+                      src={market.collateral.logo}
+                      alt={market.collateral.name}
                       width={24}
                       height={24}
                       className="rounded-full"
                     />
-                    <span>{market.collateralName}</span>
+                    <span>{formatTokenName(market.collateral)}</span>
                   </div>
                 </div>
               </div>
