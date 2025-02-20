@@ -11,8 +11,9 @@ import {
   PairAccounting,
   serializeAccounting,
 } from '../types';
+import { config } from '../config';
 
-const FRAXLEND_FACTORY_ADDRESS = '0x4c3b0e85cd8c12e049e07d9a4d68c441196e6a12';
+const { FRAXLEND_FACTORY_ADDRESS } = config.contracts;
 const SUPERCHAIN_TOKEN_LIST_URL = 'https://raw.githubusercontent.com/ethereum-optimism/ethereum-optimism.github.io/master/optimism.tokenlist.json';
 const DEFAULT_TOKEN_ICON = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png';
 

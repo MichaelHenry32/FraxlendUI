@@ -16,8 +16,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "9.2.0",
-    "viem": "^1.21.4",
-    "wagmi": "^1.4.12"
+    "viem": "^2.23.3",
+    "wagmi": "^2.14.11"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

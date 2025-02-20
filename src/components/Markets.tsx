@@ -8,6 +8,9 @@ import Image from 'next/image';
 import { useMarkets } from '@/lib/hooks/useMarkets';
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { config } from '@/lib/config';
+
+const { SFRXUSD_ADDRESS } = config.contracts;
 
 // Format rate as percentage with 2 decimal places
 function formatRate(rate: number): string {
@@ -15,6 +18,10 @@ function formatRate(rate: number): string {
 }
 
 function formatTokenName(token: Market['asset']): string {
+  // Special case for sfrxUSD
+  if (token.address.toLowerCase() === SFRXUSD_ADDRESS.toLowerCase()) {
+    return `Enhanced Frax USD (frxUSD)`;
+  }
   return `${token.name} (${token.symbol})`;
 }
 
@@ -33,9 +40,24 @@ export default function Markets() {
     
     const query = searchQuery.toLowerCase();
     return markets.filter(market => {
+      // Special case for sfrxUSD
+      if (market.asset.address.toLowerCase() === SFRXUSD_ADDRESS.toLowerCase()) {
+        const enhancedName = 'Enhanced Frax USD'.toLowerCase();
+        const frxUSDSymbol = 'frxUSD'.toLowerCase();
+        if (enhancedName.includes(query) || frxUSDSymbol.includes(query)) {
+          return true;
+        }
+      }
+
       const assetName = market.asset.name.toLowerCase();
+      const assetSymbol = market.asset.symbol.toLowerCase();
       const collateralName = market.collateral.name.toLowerCase();
-      return assetName.includes(query) || collateralName.includes(query);
+      const collateralSymbol = market.collateral.symbol.toLowerCase();
+      
+      return assetName.includes(query) || 
+             assetSymbol.includes(query) || 
+             collateralName.includes(query) || 
+             collateralSymbol.includes(query);
     });
   }, [markets, searchQuery]);
 

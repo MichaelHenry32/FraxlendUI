@@ -1,9 +1,18 @@
 import { http, createConfig } from 'wagmi';
 import { fraxtal } from 'wagmi/chains';
 
+// Override the RPC URL for fraxtal chain
+const localFraxtal = {
+  ...fraxtal,
+  rpcUrls: {
+    default: { http: ['http://localhost:8545'] },
+    public: { http: ['http://localhost:8545'] },
+  }
+};
+
 export const config = createConfig({
-  chains: [fraxtal],
+  chains: [localFraxtal],
   transports: {
-    [fraxtal.id]: http(),
+    [localFraxtal.id]: http(),
   },
 });

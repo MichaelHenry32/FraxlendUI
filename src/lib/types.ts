@@ -48,6 +48,12 @@ export function deserializeAccounting(accounting: SerializedPairAccounting): Pai
 // Formatting utilities
 export function formatAmount(amount: string | bigint, decimals: number = 18): string {
   const value = typeof amount === 'string' ? BigInt(amount) : amount;
+  
+  // If the number is small (less than 10^decimals), assume it's already in the correct unit
+  if (value < BigInt(10) ** BigInt(decimals)) {
+    return value.toString();
+  }
+  
   const divisor = BigInt(10 ** decimals);
   const integerPart = value / divisor;
   const fractionalPart = value % divisor;
